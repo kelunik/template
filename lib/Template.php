@@ -1,6 +1,6 @@
 <?php
 
-namespace Kelunik\Tpl;
+namespace Kelunik\Template;
 
 class Template {
     const LOAD_PHP = 0;

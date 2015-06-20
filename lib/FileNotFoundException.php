@@ -1,6 +1,6 @@
 <?php
 
-namespace Kelunik\Tpl;
+namespace Kelunik\Template;
 
 use Exception;
 
