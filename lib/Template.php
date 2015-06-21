@@ -82,4 +82,8 @@ class Template {
 
         return $value;
     }
+
+    private function escape (string $str) {
+        return htmlspecialchars($str, ENT_QUOTES | ENT_HTML5);
+    }
 }
