@@ -11,6 +11,7 @@ class Template {
     private $vars;
     private $cache;
     private $context;
+    private $closures;
 
     public function __construct (string $file, int $option, Cache $cache) {
         $this->file = $file;
@@ -32,30 +33,29 @@ class Template {
         return $this->inline($this->file, $this->option);
     }
 
-    private function inline (string $file, int $options = self::LOAD_PHP) {
-        if ($file[0] !== "/") {
-            $context = "";
-
-            foreach ($this->context as $path) {
-                if (empty($path)) {
-                    continue;
-                }
-
-                $context .= $path . "/";
-            }
+    private function inline (string $filename, int $options = self::LOAD_PHP) {
+        if ($filename[0] !== "/") {
+            end($this->context);
+            $path = current($this->context) . "/";
         } else {
-            $context = "";
+            $path = "";
         }
 
-        $value = $this->load($context . $file);
+        $file = $path . $filename;
+        $value = $this->load($file);
         $this->context[] = dirname($file);
 
         try {
             if ($options === self::LOAD_PHP) {
-                ob_start();
+                if (!isset($this->closures[$file])) {
+                    $closure = eval("return function () { extract(\$this->vars); ?>$value<?php };");
+                    $this->closures[$file] = $closure;
+                }
 
                 try {
-                    eval("unset(\$value, \$options); extract(\$this->vars); ?>$value");
+                    ob_start();
+                    $closure = $this->closures[$file];
+                    $closure();
                     return ob_get_contents();
                 } finally {
                     ob_end_clean();
@@ -66,6 +66,8 @@ class Template {
         } finally {
             array_pop($this->context);
         }
+
+        return "";
     }
 
     private function load (string $file) {

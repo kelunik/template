@@ -9,6 +9,9 @@
     }
   ],
   "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "dev-master"
+  },
   "autoload": {
     "psr-4": {
       "Kelunik\\Template\\": "lib"
