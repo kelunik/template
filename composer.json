@@ -10,7 +10,7 @@
   ],
   "require": {},
   "require-dev": {
-    "phpunit/phpunit": "dev-master"
+    "phpunit/phpunit": "^4"
   },
   "autoload": {
     "psr-4": {
